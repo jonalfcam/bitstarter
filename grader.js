@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+rest = require('node_moules/restler')
 /*
 Automatically grade files for the presence of specified HTML tags/attributes.
 Uses commander.js and cheerio. Teaches command line application development
@@ -65,10 +66,22 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-u, --url <urle_file>','Path to URL', clone(assertFileExists), HTMLFILE_DEFAULT)
         .parse(process.argv);
+    if(program.file){
     var checkJson = checkHtmlFile(program.file, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
+	}
+    else{
+	var page = rest.get(program.url).on('complete', function(data) {
+  sys.puts(data[0].sounds[0].sound[0].message); // auto convert to object
+});
+	var checkJson = checkHtmlFile(page, program.checks);
+	    var outJson = JSON.stringify(checkJson, null, 4);
+    console.log(outJson);
+
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
